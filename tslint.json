@@ -2,7 +2,7 @@
   "rules": {
     "adjacent-overload-signatures": true,
     "ban-comma-operator": true,
-    "no-namespace": true,
+    "no-namespace": false,
     "no-parameter-reassignment": true,
     "no-reference": true,
     "label-position": true,

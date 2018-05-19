@@ -1,10 +1,5 @@
-export function reverseString(forward: string): string {
-  if (!forward) return forward;
+export { Router } from './router';
+export { Validator } from './validator';
+export { errorHandler } from './error-handler';
 
-  return forward
-    .split('')
-    .reverse()
-    .join('');
-}
-
-console.log('This is the example typescript application!');
+export * from './types';
