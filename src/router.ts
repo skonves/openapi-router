@@ -57,7 +57,9 @@ export class Router {
             if (!validator.ignoreResponseErrors) {
               const fn = res.end;
               res.end = function() {
-                if (!res.openapi) {
+                if (res.openapi || res.statusCode === 304) {
+                  fn.apply(res, arguments);
+                } else if (!res.openapi) {
                   res.openapi = validator.validateResponse(req, res, arguments);
 
                   if (res.openapi.isValid) {
@@ -68,8 +70,6 @@ export class Router {
                       scope: ErrorScope.response,
                     });
                   }
-                } else {
-                  fn.apply(res, arguments);
                 }
               };
             }
