@@ -93,6 +93,7 @@ export namespace OpenAPI {
   };
 
   export type Info = {
+    version: string;
     title: string;
     description?: string;
     termsOfService?: string;
