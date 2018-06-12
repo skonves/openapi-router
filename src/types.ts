@@ -123,14 +123,7 @@ export namespace OpenAPI {
         in: 'query' | 'header' | 'path' | 'formData';
         description?: string;
         required?: boolean;
-        type:
-          | 'string'
-          | 'number'
-          | 'integer'
-          | 'boolean'
-          | 'array'
-          | 'file'
-          | 'object'; // TODO: verify that object is valid
+        type: PropertyType;
         format?: string;
         allowEmptyValue?: boolean;
         items?: Items;
@@ -154,14 +147,7 @@ export namespace OpenAPI {
 
   export type Header = {
     description?: string;
-    type:
-      | 'string'
-      | 'number'
-      | 'integer'
-      | 'boolean'
-      | 'array'
-      | 'file'
-      | 'object'; // TODO: verify that object is valid
+    type: PropertyType;
     format?: string;
     items?: Items;
     collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
@@ -176,14 +162,7 @@ export namespace OpenAPI {
   };
 
   export type Items = {
-    type:
-      | 'string'
-      | 'number'
-      | 'integer'
-      | 'boolean'
-      | 'array'
-      | 'file'
-      | 'object'; // TODO: verify that object is valid
+    type: PropertyType;
     format?: string;
     items?: Items;
     collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
@@ -290,4 +269,15 @@ export namespace OpenAPI {
   };
 
   export type JsonSchema = any;
+
+  export type TypePrimitive =
+    | 'string'
+    | 'number'
+    | 'integer'
+    | 'boolean'
+    | 'array'
+    | 'file'
+    | 'object'; // TODO: verify that object is valid
+
+  export type PropertyType = TypePrimitive | [TypePrimitive];
 }
