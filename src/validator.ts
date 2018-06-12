@@ -260,7 +260,16 @@ function preCast(
 ): any {
   if (isParameter(definition) && definition.in === 'body') return value;
 
-  switch (definition.type) {
+  let typePrimitive: OpenAPI.TypePrimitive;
+  if (Array.isArray(definition.type)) {
+    typePrimitive = definition.type[0];
+    console.warn(
+      `Found type array. Defaulting to first type '${typePrimitive}'. See https://github.com/skonves/openapi-router/issues/9`,
+    );
+  } else {
+    typePrimitive = definition.type;
+  }
+  switch (typePrimitive) {
     case 'array': {
       let values;
 
