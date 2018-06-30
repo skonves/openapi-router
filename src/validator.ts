@@ -84,7 +84,7 @@ export class Validator {
     return result;
   }
 
-  validateResponse(req: express.Request, res: express.Response, bodyArgs) {
+  validateResponse(res: express.Response, bodyArgs) {
     const response = this.getResponse(res.statusCode);
 
     if (response) {

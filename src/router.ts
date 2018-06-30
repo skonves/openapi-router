@@ -60,7 +60,7 @@ export class Router {
                 if (res.openapi || res.statusCode === 304) {
                   fn.apply(res, arguments);
                 } else if (!res.openapi) {
-                  res.openapi = validator.validateResponse(req, res, arguments);
+                  res.openapi = validator.validateResponse(res, arguments);
 
                   if (res.openapi.isValid) {
                     fn.apply(res, arguments);
