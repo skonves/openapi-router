@@ -15,7 +15,7 @@ import {
 
 export class Validator {
   constructor(
-    private operationId: string,
+    operationId: string,
     private spec: OpenAPI.Schema,
     options?: ResponseOptions,
   ) {
