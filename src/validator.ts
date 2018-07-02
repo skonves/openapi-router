@@ -5,13 +5,19 @@ import {
   ResponseValidationError,
   ResponseOptions,
 } from './types';
-import { getValuesFromRequest } from './express-utility';
 
 import {
   Validator as JsonValidator,
   ValidatorResult as JsonValidatorResult,
-  ValidationError as JsonValidationError,
 } from 'jsonschema';
+import { DefinedValuesStep } from './pipeline/defined-values-step';
+import { DefaultValuesStep } from './pipeline/default-values-step';
+import { PreCastStep, preCast } from './pipeline/pre-cast-step';
+import { PostCastStep } from './pipeline/post-cast-step';
+import { ValidateStep } from './pipeline/validate-step';
+import { IPipeline } from './pipeline/types';
+import { RequestPipeline } from './pipeline/request-pipeline';
+import { getValuesFromRequest } from './express-utility';
 
 export class Validator {
   constructor(
@@ -28,60 +34,19 @@ export class Validator {
     this.ignoreMissingHeaders = options && !!options.ignoreMissingHeaders;
     this.ignoreInvalidBody = options && !!options.ignoreInvalidBody;
     this.ignoreInvalidStatus = options && !!options.ignoreInvalidStatus;
+
+    this.pipeline = new RequestPipeline(
+      new DefinedValuesStep(this.parameters),
+      new DefaultValuesStep(this.parameters),
+      new PreCastStep(this.parameters),
+      new ValidateStep(this.parameters, this.spec),
+      new PostCastStep(this.parameters),
+    );
   }
 
   validateRequest(req: express.Request): RequestValidationResult {
-    const result: RequestValidationResult = {
-      errors: [],
-      isValid: true,
-      params: {},
-    };
-
-    if (!this.parameters.length) return result;
-
     const values = getValuesFromRequest(req, this.parameters);
-
-    this.parameters.forEach(parameter => {
-      let value = getValueOrDefault(values[parameter.name], parameter);
-
-      if (typeof value !== 'undefined') {
-        value = preCast(value, parameter);
-        const validatorResult = this.validateValue(
-          value,
-          parameter.in === 'body' ? parameter.schema : parameter,
-        );
-        if (validatorResult && !validatorResult.errors.length) {
-          value = postCast(
-            value,
-            parameter.in === 'body' ? parameter.schema : parameter,
-          );
-        }
-
-        result.params[parameter.name] = value;
-
-        if (validatorResult.errors.length > 0) {
-          result.isValid = false;
-          result.errors.push({
-            parameter: parameter.name,
-            notFound: false,
-            notImplemented: false,
-            notAllowed: false,
-            errors: validatorResult.errors,
-          });
-        }
-      } else if (parameter.required) {
-        result.isValid = false;
-        result.errors.push({
-          parameter: parameter.name,
-          location: parameter.in,
-          notFound: true,
-          notImplemented: false,
-          notAllowed: false,
-        });
-      }
-    });
-
-    return result;
+    return this.pipeline.excecute(values);
   }
 
   validateResponse(res: express.Response, bodyArgs) {
@@ -205,6 +170,7 @@ export class Validator {
   private readonly operation: OpenAPI.Operation;
   private readonly parameters: OpenAPI.Parameter[];
   private readonly jsonValidator: JsonValidator;
+  private readonly pipeline: IPipeline;
 
   private readonly ignoreInvalidHeaders: boolean;
   private readonly ignoreMissingHeaders: boolean;
@@ -220,14 +186,6 @@ function resolveJsonPointer(jpath, object) {
       (obj, segment) => (segment === '#' ? object : (obj || {})[segment]),
       object,
     );
-}
-
-function getValueOrDefault<T>(value: T, parameter: OpenAPI.Parameter): T {
-  return typeof value === 'undefined' &&
-    !parameter.required &&
-    parameter.in !== 'body'
-    ? parameter.default
-    : value;
 }
 
 // TODO: consider reusing body-parser logic
@@ -251,99 +209,6 @@ function parseContentType(contentType) {
     },
     { mimeType },
   );
-}
-
-/** Casts raw values from the request before they are validated */
-function preCast(
-  value: any,
-  definition: OpenAPI.Parameter | OpenAPI.Items,
-): any {
-  if (isParameter(definition) && definition.in === 'body') return value;
-
-  let typePrimitive: OpenAPI.TypePrimitive;
-  if (Array.isArray(definition.type)) {
-    typePrimitive = definition.type[0];
-    console.warn(
-      `Found type array. Defaulting to first type '${typePrimitive}'. See https://github.com/skonves/openapi-router/issues/9`,
-    );
-  } else {
-    typePrimitive = definition.type;
-  }
-  switch (typePrimitive) {
-    case 'array': {
-      let values;
-
-      switch (definition.collectionFormat) {
-        case 'ssv':
-          values = value.split(' ');
-          break;
-        case 'tsv':
-          values = value.split('\t');
-          break;
-        case 'pipes':
-          values = value.split('|');
-          break;
-        case 'csv':
-        default:
-          if (Array.isArray(value)) {
-            values = value;
-          } else if (value.split) {
-            values = value.split(',');
-          } else {
-            values = value;
-          }
-
-          break;
-      }
-
-      return values.map
-        ? values.map(v => {
-            return preCast(v, definition.items);
-          })
-        : values;
-    }
-    case 'boolean': {
-      if (typeof value === 'string') {
-        return value.toLowerCase() === 'true' || value.toLowerCase() === 'false'
-          ? value.toLowerCase() === 'true'
-          : value;
-      } else {
-        return value;
-      }
-    }
-    case 'integer': {
-      const result = Number(value);
-      return Number.isInteger(result) ? result : value;
-    }
-    case 'number': {
-      const result = Number(value);
-      return Number.isNaN(result) ? value : result;
-    }
-    case 'object': {
-      try {
-        return JSON.parse(value);
-      } catch (ex) {
-        return value;
-      }
-    }
-    default: {
-      return value;
-    }
-  }
-}
-
-/** Casts values AFTER validated to support string formats */
-function postCast(
-  value: any,
-  definition: OpenAPI.Parameter | OpenAPI.JsonSchema,
-) {
-  const type = definition.type;
-  const format = definition.format;
-  if (type === 'string' && (format === 'date' || format === 'date-time')) {
-    return new Date(value);
-  } else {
-    return value;
-  }
 }
 
 function getOperation(
@@ -384,10 +249,4 @@ function isReference<T>(
   value: T | OpenAPI.Reference,
 ): value is OpenAPI.Reference {
   return (<OpenAPI.Reference>value).$ref !== undefined;
-}
-
-function isParameter(
-  value: OpenAPI.Parameter | OpenAPI.Items,
-): value is OpenAPI.Parameter {
-  return (<OpenAPI.Parameter>value).name !== undefined;
 }
