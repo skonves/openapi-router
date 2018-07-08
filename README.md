@@ -1,3 +1,7 @@
+[![travis](https://img.shields.io/travis/skonves/openapi-router.svg)](https://travis-ci.org/skonves/openapi-router)
+[![coveralls](https://img.shields.io/coveralls/skonves/openapi-router.svg)](https://coveralls.io/github/skonves/openapi-router)
+[![npm](https://img.shields.io/npm/v/openapi-router.svg)](https://www.npmjs.com/package/openapi-router)
+
 # OpenAPI Router
 
 Simple router and validator for ExpressJs and OpenAPI 2.0
