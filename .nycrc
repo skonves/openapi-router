@@ -2,5 +2,5 @@
   "extension": [".ts"],
   "reporter": ["lcov"],
   "include": "src",
-  "exclude": "**/*tests.*"
+  "exclude": ["**/*tests.*", "**/*.d.ts"]
 }
