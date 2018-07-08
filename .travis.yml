@@ -9,3 +9,5 @@ install:
   - npm ci
 script:
   - npm t
+after_success:
+  - npm run coveralls
