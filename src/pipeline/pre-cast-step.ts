@@ -25,15 +25,25 @@ export function preCast(
 ): any {
   if (isParameter(definition) && definition.in === 'body') return value;
 
-  let typePrimitive: OpenAPI.TypePrimitive;
   if (Array.isArray(definition.type)) {
-    typePrimitive = definition.type[0];
-    console.warn(
-      `Found type array. Defaulting to first type '${typePrimitive}'. See https://github.com/skonves/openapi-router/issues/9`,
-    );
+    for (const typePrimitive of sortTypePrimatives(definition.type)) {
+      const result = doPreCast(value, typePrimitive, definition);
+      if (result.success) return result.value;
+    }
+    return value;
   } else {
-    typePrimitive = definition.type;
+    return doPreCast(value, definition.type, definition).value;
   }
+}
+
+export function doPreCast(
+  value: any,
+  typePrimitive: OpenAPI.TypePrimitive,
+  definition: OpenAPI.Parameter | OpenAPI.Items,
+): { value: any; success: boolean } {
+  if (isParameter(definition) && definition.in === 'body')
+    return { value, success: true };
+
   switch (typePrimitive) {
     case 'array': {
       let values;
@@ -62,39 +72,63 @@ export function preCast(
       }
 
       return values.map
-        ? values.map(v => {
-            return preCast(v, definition.items);
-          })
-        : values;
+        ? {
+            value: values.map(v => {
+              return preCast(v, definition.items);
+            }),
+            success: true,
+          }
+        : { value, success: false };
     }
     case 'boolean': {
       if (typeof value === 'string') {
         return value.toLowerCase() === 'true' || value.toLowerCase() === 'false'
-          ? value.toLowerCase() === 'true'
-          : value;
+          ? { value: value.toLowerCase() === 'true', success: true }
+          : { value, success: false };
       } else {
-        return value;
+        return { value, success: false };
       }
     }
     case 'integer': {
       const result = Number(value);
-      return Number.isInteger(result) ? result : value;
+      return Number.isInteger(result)
+        ? { value: result, success: true }
+        : { value, success: false };
     }
     case 'number': {
       const result = Number(value);
-      return Number.isNaN(result) ? value : result;
+      return Number.isNaN(result)
+        ? { value, success: false }
+        : { value: result, success: true };
     }
     case 'object': {
       try {
-        return JSON.parse(value);
+        return { value: JSON.parse(value), success: true };
       } catch (ex) {
-        return value;
+        return { value, success: false };
       }
     }
     default: {
-      return value;
+      return { value, success: false };
     }
   }
+}
+
+export function sortTypePrimatives(types: OpenAPI.TypePrimitive[]) {
+  const order: { [key: string]: number } = {
+    boolean: 1,
+    integer: 2,
+    number: 3,
+    array: 4,
+    object: 4,
+    string: 99,
+  };
+
+  return [...types].sort(
+    (a, b) =>
+      (order[a] || Number.MAX_SAFE_INTEGER) -
+      (order[b] || Number.MAX_SAFE_INTEGER),
+  );
 }
 
 function isParameter(

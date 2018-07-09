@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { RequestValidationResult, OpenAPI } from '../types';
-import { PreCastStep } from './pre-cast-step';
+import { PreCastStep, sortTypePrimatives } from './pre-cast-step';
 
 describe('PreCastStep', () => {
   it('does not cast a body parameter', () => {
@@ -500,5 +500,97 @@ describe('PreCastStep', () => {
     expect(result.params.testValue).to.deep.equal({
       not: 'an array or a string',
     });
+  });
+
+  describe('type arrays', () => {
+    it('sorts correctly', () => {
+      // ARRANGE
+      const types: OpenAPI.TypePrimitive[] = [
+        'string',
+        'array',
+        'boolean',
+        'number',
+      ];
+
+      // ACT
+      const result = sortTypePrimatives(types);
+
+      // ASSERT
+      expect(result).to.deep.equal(['boolean', 'number', 'array', 'string']);
+    });
+
+    run(['boolean', 'number'], '5', 5, 'number');
+    run(['boolean', 'number'], 'true', true, 'boolean');
+    run(['boolean', 'number'], 'asdf', 'asdf', 'string');
+    run(['boolean', 'file'], 'asdf', 'asdf', 'string');
+
+    it(`returns "1,2,3" as an array for the type array ["array", "number"]`, () => {
+      // ARRANGE
+      const parameters: OpenAPI.Parameter[] = [
+        {
+          in: 'query',
+          name: 'testValue',
+          type: ['array', 'number'],
+          items: {
+            type: 'number',
+          },
+        },
+      ];
+      const state: RequestValidationResult = {
+        errors: [],
+        isValid: true,
+        params: {
+          testValue: '1,2,3',
+        },
+      };
+
+      const sut = new PreCastStep(parameters);
+
+      // ACT
+      const result = sut.excecute(state);
+
+      // ASSERT
+      expect(result.params.testValue)
+        .to.be.an('array')
+        .to.deep.equal([1, 2, 3]);
+    });
+
+    function run<T>(
+      types: OpenAPI.TypePrimitive[],
+      value: string,
+      expectedValue: T,
+      expectedType: string,
+    ) {
+      const testCase = `returns "${value}" as a ${expectedType} for the type array [${types.map(
+        t => `"${t}"`,
+      )}]`;
+      it(testCase, () => {
+        // ARRANGE
+        const parameters: OpenAPI.Parameter[] = [
+          {
+            in: 'query',
+            name: 'testValue',
+            type: types,
+          },
+        ];
+        const state: RequestValidationResult = {
+          errors: [],
+          isValid: true,
+          params: {
+            testValue: `${value}`,
+          },
+        };
+
+        const sut = new PreCastStep(parameters);
+
+        // ACT
+        const result = sut.excecute(state);
+
+        // ASSERT
+        expect(result.params.testValue)
+          .to.be.a(expectedType)
+          .to.equal(expectedValue);
+      });
+    }
   });
 });
