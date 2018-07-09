@@ -128,9 +128,22 @@ export class Router {
     const paths = new Set<string>(this.operations.map(op => op.path));
 
     paths.forEach(path => {
-      const allowedMethods = this.operations
-        .filter(op => op.path === path)
-        .map(op => op.verb);
+      const allowedMethods = [
+        'options',
+        ...this.operations.filter(op => op.path === path).map(op => op.verb),
+      ];
+
+      this.app.options(
+        path,
+        (
+          req: express.Request & { openapi?: RequestValidationResult },
+          res: express.Response,
+          next: express.NextFunction,
+        ) => {
+          res.set('Allow', allowedMethods.map(m => m.toUpperCase()).join(', '));
+          res.status(204).send();
+        },
+      );
 
       this.app.all(
         path,
