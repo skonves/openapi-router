@@ -279,5 +279,5 @@ export namespace OpenAPI {
     | 'file'
     | 'object'; // TODO: verify that object is valid
 
-  export type PropertyType = TypePrimitive | [TypePrimitive];
+  export type PropertyType = TypePrimitive | TypePrimitive[];
 }
