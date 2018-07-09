@@ -10,7 +10,7 @@ import {
 } from './types';
 
 export function errorHandler(
-  err: { code?: string; scope?: ErrorScope },
+  err: { code?: string; scope?: ErrorScope; allowedMethods?: string[] },
   req: express.Request & { openapi?: RequestValidationResult },
   res: express.Response & { openapi?: ResponseValidationResult },
   next: express.NextFunction,
@@ -31,6 +31,14 @@ export function errorHandler(
               title: 'Method not allowed',
             });
             code = Math.max(405, code);
+            if (err.allowedMethods) {
+              res.set(
+                'Allow',
+                err.allowedMethods.map(m => m.toUpperCase()).join(', '),
+              );
+            } else {
+              res.set('Allow');
+            }
           } else if (error.notImplemented) {
             // Method Not Allowed
             errors.push({

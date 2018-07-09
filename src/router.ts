@@ -128,6 +128,10 @@ export class Router {
     const paths = new Set<string>(this.operations.map(op => op.path));
 
     paths.forEach(path => {
+      const allowedMethods = this.operations
+        .filter(op => op.path === path)
+        .map(op => op.verb);
+
       this.app.all(
         path,
         (
@@ -147,7 +151,11 @@ export class Router {
             notAllowed: true,
           });
 
-          next({ code: OPENAPI_ERRORS, scope: ErrorScope.request });
+          next({
+            code: OPENAPI_ERRORS,
+            scope: ErrorScope.request,
+            allowedMethods,
+          });
         },
       );
     });
