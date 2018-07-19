@@ -24,7 +24,7 @@ describe('PostCastStep', () => {
     const sut = new PostCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testDate).to.be.an.instanceOf(Date);
@@ -51,7 +51,7 @@ describe('PostCastStep', () => {
     const sut = new PostCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testDate).to.be.an.instanceOf(Date);
@@ -78,7 +78,7 @@ describe('PostCastStep', () => {
     const sut = new PostCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testDate).to.not.be.an.instanceOf(Date);
@@ -104,7 +104,7 @@ describe('PostCastStep', () => {
     const sut = new PostCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testDate).to.not.be.an.instanceOf(Date);
@@ -122,7 +122,7 @@ describe('PostCastStep', () => {
     const sut = new PostCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result).to.deep.equal(state);
@@ -149,7 +149,7 @@ describe('PostCastStep', () => {
     const sut = new PostCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testDate).to.not.be.an.instanceOf(Date);

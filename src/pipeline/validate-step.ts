@@ -14,7 +14,7 @@ export class ValidateStep implements IPipelineStep {
     this.jsonValidator.addSchema(spec, '/');
   }
   private readonly jsonValidator: JsonValidator;
-  excecute(state: RequestValidationResult): RequestValidationResult {
+  execute(state: RequestValidationResult): RequestValidationResult {
     if (!this.parameters || !this.parameters.length) return state;
 
     return this.parameters.reduce((acc, parameter) => {

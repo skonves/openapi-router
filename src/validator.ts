@@ -46,7 +46,7 @@ export class Validator {
 
   validateRequest(req: express.Request): RequestValidationResult {
     const values = getValuesFromRequest(req, this.parameters);
-    return this.pipeline.excecute(values);
+    return this.pipeline.execute(values);
   }
 
   validateResponse(res: express.Response, bodyArgs) {

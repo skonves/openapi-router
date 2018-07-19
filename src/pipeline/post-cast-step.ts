@@ -3,7 +3,7 @@ import { OpenAPI, RequestValidationResult } from '../types';
 
 export class PostCastStep implements IPipelineStep {
   constructor(private parameters: OpenAPI.Parameter[]) {}
-  excecute(state: RequestValidationResult): RequestValidationResult {
+  execute(state: RequestValidationResult): RequestValidationResult {
     if (!this.parameters || !this.parameters.length || !state.isValid) {
       return state;
     }

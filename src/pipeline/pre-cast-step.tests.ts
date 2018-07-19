@@ -30,7 +30,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.body)
@@ -59,7 +59,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -87,7 +87,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -115,7 +115,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -144,7 +144,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -172,7 +172,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -201,7 +201,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -229,7 +229,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -257,7 +257,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -285,7 +285,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue)
@@ -317,7 +317,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal([1, 2, 3, 4]);
@@ -347,7 +347,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal([1, 2, 3, 4]);
@@ -377,7 +377,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal([1, 2, 3, 4]);
@@ -407,7 +407,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal([1, 2, 3, 4]);
@@ -436,7 +436,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal([1, 2, 3, 4]);
@@ -465,7 +465,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal([1, 2, 3, 4]);
@@ -494,7 +494,7 @@ describe('PreCastStep', () => {
     const sut = new PreCastStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.deep.equal({
@@ -547,7 +547,7 @@ describe('PreCastStep', () => {
       const sut = new PreCastStep(parameters);
 
       // ACT
-      const result = sut.excecute(state);
+      const result = sut.execute(state);
 
       // ASSERT
       expect(result.params.testValue)
@@ -584,7 +584,7 @@ describe('PreCastStep', () => {
         const sut = new PreCastStep(parameters);
 
         // ACT
-        const result = sut.excecute(state);
+        const result = sut.execute(state);
 
         // ASSERT
         expect(result.params.testValue)
