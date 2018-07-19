@@ -32,7 +32,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, baseSpec());
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.errors).to.be.empty;
@@ -68,7 +68,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, baseSpec());
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.errors).to.not.be.empty;
@@ -103,7 +103,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, baseSpec());
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.errors).to.be.empty;
@@ -138,7 +138,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, baseSpec());
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.errors).to.not.be.empty;
@@ -166,7 +166,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, baseSpec());
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.errors).to.be.empty;
@@ -186,7 +186,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, baseSpec());
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result).to.deep.equal(state);
@@ -237,7 +237,7 @@ describe('ValidateStep', () => {
     const sut = new ValidateStep(parameters, spec);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.errors).to.be.empty;

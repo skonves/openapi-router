@@ -6,7 +6,7 @@ export class RequestPipeline implements IPipeline {
     this.steps = steps;
   }
   private readonly steps: IPipelineStep[];
-  excecute(params: RequestValues): RequestValidationResult {
+  execute(params: RequestValues): RequestValidationResult {
     const initialState: RequestValidationResult = {
       errors: [],
       isValid: true,
@@ -14,7 +14,7 @@ export class RequestPipeline implements IPipeline {
     };
 
     return this.steps.reduce(
-      (state, step) => step.excecute(state),
+      (state, step) => step.execute(state),
       initialState,
     );
   }

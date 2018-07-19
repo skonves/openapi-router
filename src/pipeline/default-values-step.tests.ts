@@ -23,7 +23,7 @@ describe('DefaultValuesStep', () => {
     const sut = new DefaultValuesStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.be.equal(defaultValue);
@@ -52,7 +52,7 @@ describe('DefaultValuesStep', () => {
     const sut = new DefaultValuesStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.be.equal(providedValue);
@@ -76,7 +76,7 @@ describe('DefaultValuesStep', () => {
     const sut = new DefaultValuesStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params.testValue).to.be.undefined;

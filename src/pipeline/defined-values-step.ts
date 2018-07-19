@@ -4,7 +4,7 @@ import { OpenAPI, RequestValidationResult } from '../types';
 /** Restricts `param` values to parameters defined in the spec */
 export class DefinedValuesStep implements IPipelineStep {
   constructor(private parameters: OpenAPI.Parameter[]) {}
-  excecute(state: RequestValidationResult): RequestValidationResult {
+  execute(state: RequestValidationResult): RequestValidationResult {
     const definedParams = this.parameters.reduce(
       (values, parameter) => ({
         ...values,

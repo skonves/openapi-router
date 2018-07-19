@@ -24,7 +24,7 @@ describe('DefinedValuesStep', () => {
     const sut = new DefinedValuesStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params).to.haveOwnProperty('testValue');
@@ -52,7 +52,7 @@ describe('DefinedValuesStep', () => {
     const sut = new DefinedValuesStep(parameters);
 
     // ACT
-    const result = sut.excecute(state);
+    const result = sut.execute(state);
 
     // ASSERT
     expect(result.params).to.not.haveOwnProperty('someOtherValue');
